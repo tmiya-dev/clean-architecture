@@ -1,0 +1,33 @@
+version: "3.8"
+services:
+  minio:
+    image: minio/minio
+    volumes:
+      - minio:/export
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      MINIO_ROOT_USER: "clean"
+      MINIO_ROOT_PASSWORD: "m6LxxxRD8RirRK"
+    command: server /export --console-address :9001
+  mc:
+    image: minio/mc:latest
+    depends_on:
+      - minio
+    environment:
+      MINIO_ROOT_USER: "clean"
+      MINIO_ROOT_PASSWORD: "m6LxxxRD8RirRK"
+    entrypoint: >
+      /bin/sh -c "
+      mc alias set myminio http://minio:9000 clean m6LxxxRD8RirRK;
+      mc mb --ignore-existing myminio/clean;
+      mc anonymous set public myminio/clean;
+      "
+  app:
+    build: .
+    env_file: .env
+    ports:
+      - "80:80"
+volumes:
+  minio:
