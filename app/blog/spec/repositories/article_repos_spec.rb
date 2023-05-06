@@ -1,4 +1,4 @@
-require './app/repositories/article_repos.rb'
+require_relative 'article_repos'
 
 RSpec.describe 'アーティクルレポジトリ' do
 
